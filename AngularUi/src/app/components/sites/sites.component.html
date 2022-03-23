@@ -1,0 +1,23 @@
+<div class="row">
+  <div *ngIf="sites$ | async as sites" class="col">
+    <div class="card" *ngFor="let site of sites">
+      <div class="card-header">{{ site.description }}</div>
+      <div class="card-body">
+        {{ site.description }} ({{ site.name }}) has the following conveniences:
+        <ul>
+          <li *ngIf="site.water">Water Hookups</li>
+          <li *ngIf="site.electrical">Electrical Hookups</li>
+          <li *ngIf="site.lakeFront">Lakefront Site</li>
+        </ul>
+      </div>
+      <div class="card-footer">
+        <a class="btn btn-primary" [routerLink]="['/sites', site.id]"
+          >Find Availability and Book {{ site.name }}</a
+        >
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <router-outlet></router-outlet>
+  </div>
+</div>

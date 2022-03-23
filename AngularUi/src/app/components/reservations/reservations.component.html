@@ -1,0 +1,19 @@
+<section *ngIf="reservations$ | async as reservations">
+  <div class="card" *ngFor="let reservation of reservations">
+    <div class="card-header">
+      Reservation for {{ reservation.siteName }} by {{ reservation.user }}
+    </div>
+    <div class="card-body">
+      <p>This reservation was created on {{ reservation.created | date }}.</p>
+      <p>
+        The reservation is for {{ reservation.startDate | date }} through
+        {{ reservation.endDate | date }}
+      </p>
+      <p>The reservation is currently {{ reservation.status }}</p>
+    </div>
+  </div>
+</section>
+
+<section class="alert alert-info" *ngIf="(reservations$ | async)?.length === 0">
+  <p>You don't appear to have any reservations.</p>
+</section>

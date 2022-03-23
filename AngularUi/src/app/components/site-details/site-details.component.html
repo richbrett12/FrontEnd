@@ -1,0 +1,108 @@
+<div *ngIf="siteEntity$ | async as site">
+  <p><b>Site Name:</b> {{ site.name }}</p>
+  <p><b>Site Description:</b> {{ site.description }}</p>
+  <form [formGroup]="form" class="row">
+    <input type="hidden" formControlName="siteId" />
+    <div class="form-group col">
+      <label for="startDate">Date of Arrival:</label>
+      <input
+        type="date"
+        id="startDate"
+        class="form-control"
+        formControlName="startDate"
+      />
+      <div
+        class="alert alert-danger"
+        *ngIf="startDate?.errors && (startDate?.touched || startDate?.dirty)"
+      >
+        <div *ngIf="startDate?.hasError('todayOrLater') as err">
+          <p>Cannot reserve dates in the past</p>
+        </div>
+      </div>
+    </div>
+    <div class="form-group col">
+      <label for="endDate">Date of Departure:</label>
+      <input
+        type="date"
+        id="endDate"
+        class="form-control"
+        formControlName="endDate"
+      />
+      <div
+        class="alert alert-danger"
+        *ngIf="endDate?.errors && (endDate?.touched || endDate?.dirty)"
+      >
+        <div *ngIf="endDate?.hasError('todayOrLater') as err">
+          <p>Cannot reserve dates in the past</p>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="alert alert-danger"
+      *ngIf="form.errors?.['tooShortReservation'] && (form.touched || form.dirty) "
+    >
+      <p>Your stay must be at minimum two continguous days.</p>
+    </div>
+  </form>
+
+  <div *ngIf="siteAvailable$ | async as avail">
+    <div class="alert alert-danger" *ngIf="!avail.available">
+      <p>Sorry. The site is booked during all or part of your stay.</p>
+      <ul>
+        <li *ngFor="let booking of avail.bookedDays">
+          {{ booking.toString() | date: "shortDate":"UTC" }} is currently
+          booked.
+        </li>
+      </ul>
+    </div>
+    <div class="alert alert-success" *ngIf="avail.available">
+      <p>Congratulations! That site is available to book.</p>
+      <div class="card">
+        <div class="card-header">
+          Request to book {{ site.description }} ({{ site.name }})
+        </div>
+        <div class="card-body" *ngIf="summary$ | async as s">
+          <ul class="list-group" *ngIf="pricingInfo$ | async as p">
+            <li class="list-group-item">
+              <b>Base Price</b> {{ p.baseAmount | currency }} for
+              {{ avail.numberOfDays }} day(s):
+              {{ s.basePrice | currency }}
+            </li>
+            <li class="list-group-item" *ngIf="site.water">
+              <b>Water Charge</b> {{ p.waterDaily | currency }} for
+              {{ avail.numberOfDays }} day(s):
+              {{ s.waterPrice | currency }}
+            </li>
+            <li class="list-group-item" *ngIf="site.electrical">
+              <b>Water Charge</b> {{ p.electricalDaily | currency }} for
+              {{ avail.numberOfDays }} day(s):
+              {{ s.electricalPrice | currency }}
+            </li>
+            <li class="list-group-item" *ngIf="site.lakeFront">
+              <b>Water Charge</b> {{ p.lakeFrontDaily | currency }} for
+              {{ avail.numberOfDays }} day(s):
+              {{ s.lakeFrontPrice | currency }}
+            </li>
+            <li class="list-group-item">
+              <b>Grand Total</b> {{ s.total | currency }}
+            </li>
+            <li class="list-group-item">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                (click)="bookIt(site.id, s.total)"
+              >
+                Book This Site!
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<a class="btn btn-primary" [routerLink]="['sites']">Nevermind.</a>
+<div class="alert alert-info" *ngIf="!(siteEntity$ | async)">
+  <p>Please Select a Site from the List.</p>
+</div>

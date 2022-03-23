@@ -1,0 +1,17 @@
+<section *ngIf="userInfo$ | async as user">
+  <ul class="list-group">
+    <li class="list-group-item">
+      <b>User Name:</b> {{ user.preferredUserName }}
+    </li>
+    <li class="list-group-item">
+      <b>Email Address:</b> {{ user.emailAddress }}
+    </li>
+  </ul>
+  <div class="alert alert-info">
+    <p>
+      For class, this is hard-coded information. In a more "real" application
+      this would most likely come from the user information from an API or a
+      JWT.
+    </p>
+  </div>
+</section>
