@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: angularui
+spec:
+  selector:
+    matchLabels:
+      app: angularui
+  template:
+    metadata:
+      labels:
+        app: angularui
+    spec:
+      containers:
+      - name: angularui
+        image: jeffrygonzalez/camping-front-end:v0.2
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
